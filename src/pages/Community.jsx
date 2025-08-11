@@ -64,7 +64,7 @@ const Community = () => {
         onClick={() => navigate("/")}
       >
         <FiFeather size={28} className="text-purple-300" />
-        <span className="text-2xl font-bold">TruthRoom</span>
+        <span className="text-2xl font-bold">VerityBox</span>
       </div>
       <div className="max-w-3xl mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">🌍 Community Feed</h1>

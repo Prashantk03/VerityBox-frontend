@@ -12,7 +12,7 @@ export default function PostPage() {
         onClick={() => navigate("/")}
       >
         <FiFeather size={28} className="text-purple-300" />
-        <span className="text-2xl font-bold">TruthRoom</span>
+        <span className="text-2xl font-bold">VerityBox</span>
       </div>
       <PostForm />
     </div>

@@ -33,7 +33,7 @@ export default function Home() {
         className="flex items-center space-x-3 mt-10 mb-6"
       >
         <FiFeather size={36} className="text-purple-300" />
-        <h1 className="text-4xl font-bold tracking-tight">AnonymousRoom</h1>
+        <h1 className="text-4xl font-bold tracking-tight">VerityBox</h1>
       </motion.div>
 
       {/* Tagline + CTA */}
@@ -61,7 +61,7 @@ export default function Home() {
         <div>
           <h2 className="text-2xl font-bold mb-2 text-purple-300">🧠 How It Works</h2>
           <p className="text-gray-200">
-            You write anonymously. Before saving your post, AnonymousRoom scans it for safety (no names, threats, or hate).
+            You write anonymously. Before saving your post, VerityBox scans it for safety (no names, threats, or hate).
             If clean, GPT-3.5 generates a personal reflection — not advice, just insight.
             And also a great community of peoples can share their feedback for each other.
           </p>
@@ -78,7 +78,7 @@ export default function Home() {
         <div>
           <h2 className="text-2xl font-bold mb-2 text-purple-300">⚖️ Is It Safe?</h2>
           <p className="text-gray-200">
-            Yes. AnonymousRoom uses AI moderation to block any doxxing, hate speech, or harmful content.
+            Yes. VerityBox uses AI moderation to block any doxxing, hate speech, or harmful content.
             You stay 100% anonymous — and we still keep it secure and respectful.
           </p>
         </div>

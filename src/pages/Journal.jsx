@@ -35,7 +35,7 @@ export default function Journal() {
         onClick={() => navigate("/")}
       >
         <FiFeather size={28} className="text-purple-300" />
-        <span className="text-2xl font-bold">TruthRoom</span>
+        <span className="text-2xl font-bold">VerityBox</span>
       </div>
       <div className="max-w-2xl mx-auto mt-10 p-6">
         <h2 className="text-2xl font-bold mb-4 text-center">🧠 Your Journal</h2>
