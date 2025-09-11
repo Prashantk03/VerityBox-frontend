@@ -4,20 +4,25 @@ import axios from "axios";
 const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
-  const [sessionId, setSessionId] = useState(localStorage.getItem("truthroom_session") || "");
+  const [sessionId, setSessionId] = useState(
+    localStorage.getItem("truthroom_session") || ""
+  );
   const [showPopup, setShowPopup] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false); // Flag to prevent popup during restore
 
   // Generate TruthKey when button is clicked
   const generateTruthKey = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/guest`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/guest`
+      );
       const newSessionId = res.data.sessionId;
 
       localStorage.setItem("truthroom_session", newSessionId);
       setSessionId(newSessionId);
-      
-      if (!isRestoring) { // Show popup only if it's not a restore action
+
+      if (!isRestoring) {
+        // Show popup only if it's not a restore action
         setShowPopup(true);
       }
     } catch (err) {
@@ -29,7 +34,10 @@ export const SessionProvider = ({ children }) => {
   const restoreTruthKey = async (key) => {
     setIsRestoring(true); // Set flag to prevent popup on restore
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/validate`, { sessionId: key });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/validate`,
+        { sessionId: key }
+      );
 
       if (res.data.valid) {
         localStorage.setItem("truthroom_session", res.data.session.sessionId);
@@ -54,7 +62,7 @@ export const SessionProvider = ({ children }) => {
         showPopup,
         setShowPopup,
         isRestoring,
-        setIsRestoring
+        setIsRestoring,
       }}
     >
       {children}
@@ -63,4 +71,3 @@ export const SessionProvider = ({ children }) => {
 };
 
 export const useSession = () => useContext(SessionContext);
-

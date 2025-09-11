@@ -8,7 +8,7 @@ const Community = () => {
   const [newComments, setNewComments] = useState({});
   const [errors, setErrors] = useState({});
 
-  const sessionId = localStorage.getItem("truthroom_session"); 
+  const sessionId = localStorage.getItem("truthroom_session");
 
   // Fetch public posts
   useEffect(() => {
@@ -69,7 +69,13 @@ const Community = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
-            ? { ...post, likes: res.data.likes, likedBy: res.data.liked ? [...(post.likedBy || []), sessionId] : post.likedBy.filter(id => id !== sessionId) }
+            ? {
+                ...post,
+                likes: res.data.likes,
+                likedBy: res.data.liked
+                  ? [...(post.likedBy || []), sessionId]
+                  : post.likedBy.filter((id) => id !== sessionId),
+              }
             : post
         )
       );

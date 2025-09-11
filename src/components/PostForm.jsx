@@ -33,9 +33,11 @@ export default function PostForm() {
       });
       setResponse(res.data.responseAI || "No AI feedback.");
 
-      if (!localStorage.getItem("truthroom_shownKey")){
-        alert(`🔑 Your TruthKey: ${sessionId}\n\n⚠ Save this safely! This is the only way to restore your posts.`)
-      };
+      if (!localStorage.getItem("truthroom_shownKey")) {
+        alert(
+          `🔑 Your TruthKey: ${sessionId}\n\n⚠ Save this safely! This is the only way to restore your posts.`
+        );
+      }
       localStorage.setItem("truthroom_shownKey", "true");
     } catch (err) {
       setError(err?.response?.data?.reason || "Something went wrong");
@@ -63,9 +65,7 @@ export default function PostForm() {
             className="ml-2 border p-1 rounded"
           >
             <option value="ai">AI Reflection</option>
-            <option value="community">
-              Community 
-            </option>
+            <option value="community">Community</option>
           </select>
         </label>
         <button
