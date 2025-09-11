@@ -11,7 +11,7 @@ function App() {
   return (
     <SessionProvider>
       <Router>
-        <TruthKeyPopup/>
+        <TruthKeyPopup />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/post" element={<PostPage />} />
