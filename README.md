@@ -1,12 +1,36 @@
-# React + Vite
+VerityBox (formerly TruthRoom) - Frontend
+Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+VerityBox is the personal growth platform, providing users with a space to anonymously post their thoughts, receive feedback, and engage with others. Built with React, this frontend interacts with the backend to provide a seamless user experience.
 
-Currently, two official plugins are available:
+Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React: For building the user interface
 
-## Expanding the ESLint configuration
+React Router: For routing and navigation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Axios: For making HTTP requests to the backend
+
+Redux: For state management
+
+CSS/TailwindCSS: For styling
+
+React Query: For handling server-side data fetching
+
+Framer Motion: For animations
+
+Socket.io: For real-time updates
+
+Features
+
+Anonymous Posts: Users can post their thoughts anonymously.
+
+AI Feedback: GPT-powered feedback for each post.
+
+Real-time Comments: Users can comment on posts and see updates in real-time.
+
+Upvotes/Downvotes: Users can like/dislike posts to give feedback.
+
+Search and Filter: Find posts based on keywords or categories.
+
+
