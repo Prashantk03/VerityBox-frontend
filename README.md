@@ -3,7 +3,7 @@ Overview
 
 VerityBox is the personal growth platform, providing users with a space to anonymously post their thoughts, receive feedback, and engage with others. Built with React, this frontend interacts with the backend to provide a seamless user experience.
 
-Technologies Used
+Technologies Used:
 
 React: For building the user interface
 
@@ -21,7 +21,7 @@ Framer Motion: For animations
 
 Socket.io: For real-time updates
 
-Features
+Features:
 
 Anonymous Posts: Users can post their thoughts anonymously.
 
