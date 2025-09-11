@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FiFeather } from "react-icons/fi";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const sessionId = localStorage.getItem("truthroom_session");
@@ -30,13 +28,7 @@ export default function Journal() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div
-        className="flex items-center space-x-2 cursor-pointer"
-        onClick={() => navigate("/")}
-      >
-        <FiFeather size={28} className="text-purple-300" />
-        <span className="text-2xl font-bold">VerityBox</span>
-      </div>
+      <Navbar />
       <div className="max-w-2xl mx-auto mt-10 p-6">
         <h2 className="text-2xl font-bold mb-4 text-center">🧠 Your Journal</h2>
 

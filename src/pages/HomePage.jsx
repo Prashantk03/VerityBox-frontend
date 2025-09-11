@@ -1,14 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiFeather } from 'react-icons/fi'; // simple icon-based logo
+import { FiFeather } from 'react-icons/fi';
+import RestoreKey from '../components/RestoreKey';
+import GenerateKeyButton from '../components/generateKey';
+import { useSession } from '../context/sessionProvider';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { sessionId } = useSession();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white p-6 flex flex-col items-center">
-      <nav className="flex justify-between items-center mb-6 ">
-        <div className="space-x-4">
+      <nav className="flex justify-between items-center mb-6 px-4 space-x-4">
+        <div className="flex space-x-4">
           <button
             onClick={() => navigate('/journal')}
             className="hover:text-purple-400 transition"
@@ -22,6 +26,16 @@ export default function Home() {
             Community
           </button>
         </div>
+        {!sessionId && (
+        <>
+        <div className="flex items-center space-x-2">
+        <GenerateKeyButton />
+        </div>
+        <div className="flex items-center space-x-2">
+        <RestoreKey />
+        </div>
+        </>
+        )}
         
       </nav>
 

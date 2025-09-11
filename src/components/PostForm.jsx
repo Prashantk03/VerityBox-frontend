@@ -28,10 +28,15 @@ export default function PostForm() {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/posts`, {
         text,
         feedbackType,
-        sessionId,
+        sessionId: localStorage.getItem("truthroom_session"),
         public: isPublic,
       });
       setResponse(res.data.responseAI || "No AI feedback.");
+
+      if (!localStorage.getItem("truthroom_shownKey")){
+        alert(`🔑 Your TruthKey: ${sessionId}\n\n⚠ Save this safely! This is the only way to restore your posts.`)
+      };
+      localStorage.setItem("truthroom_shownKey", "true");
     } catch (err) {
       setError(err?.response?.data?.reason || "Something went wrong");
     } finally {
