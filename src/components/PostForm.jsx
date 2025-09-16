@@ -12,14 +12,19 @@ export default function PostForm() {
 
   useEffect(() => {
     let storedId = localStorage.getItem("truthroom_session");
-    if (!storedId) {
-      storedId = "anonymous-" + Date.now();
-      localStorage.setItem("truthroom_session", storedId);
+    if (storedId) {
+      setSessionId(storedId);
+    } else {
+      setSessionId("");
     }
-    setSessionId(storedId);
   }, []);
 
   const submitPost = async () => {
+    if (!sessionId){
+      alert("You must generate your TruhtKey before posting to prevent from any Data Loss");
+      return;
+    }
+
     setLoading(true);
     setResponse("");
     setError("");
@@ -28,17 +33,10 @@ export default function PostForm() {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/posts`, {
         text,
         feedbackType,
-        sessionId: localStorage.getItem("truthroom_session"),
+        sessionId,
         public: isPublic,
       });
       setResponse(res.data.responseAI || "No AI feedback.");
-
-      if (!localStorage.getItem("truthroom_shownKey")) {
-        alert(
-          `🔑 Your TruthKey: ${sessionId}\n\n⚠ Save this safely! This is the only way to restore your posts.`
-        );
-      }
-      localStorage.setItem("truthroom_shownKey", "true");
     } catch (err) {
       setError(err?.response?.data?.reason || "Something went wrong");
     } finally {
@@ -52,7 +50,7 @@ export default function PostForm() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={5}
-        className="w-full border border-gray-300 p-3 rounded-lg"
+        className="w-full border border-gray-400 p-3 rounded-lg"
         placeholder="Write your anonymous thought here..."
       />
 
@@ -62,7 +60,7 @@ export default function PostForm() {
           <select
             value={feedbackType}
             onChange={(e) => setFeedbackType(e.target.value)}
-            className="ml-2 border p-1 rounded"
+            className="ml-2 border p-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 "
           >
             <option value="ai">AI Reflection</option>
             <option value="community">Community</option>
@@ -71,7 +69,7 @@ export default function PostForm() {
         <button
           onClick={submitPost}
           disabled={loading || !text}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-900 disabled:opacity-50"
         >
           {loading ? "Posting..." : "Post"}
         </button>
@@ -81,14 +79,14 @@ export default function PostForm() {
           type="checkbox"
           checked={isPublic}
           onChange={(e) => setIsPublic(e.target.checked)}
-          className="form-checkbox h-4 w-4 text-blue-600"
+          className="form-checkbox h-4 w-4 text-gray-400"
         />
         <span className="text-sm">Make this post public?</span>
       </label>
 
-      {error && <div className="text-red-500 font-semibold">{error}</div>}
+      {error && <div className="text-black font-semibold">{error}</div>}
       {response && (
-        <div className="p-4 mt-4 border-l-4 border-blue-500 bg-blue-50 rounded">
+        <div className="p-4 mt-4 border-l-4 border-gray-400 bg-white rounded">
           <p className="font-semibold">AI Reflection:</p>
           <p>{response}</p>
         </div>

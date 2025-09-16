@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 import Navbar from "../components/Navbar";
 
 const Community = () => {
@@ -10,7 +11,7 @@ const Community = () => {
 
   const sessionId = localStorage.getItem("truthroom_session");
 
-  // Fetch public posts
+  //************Fetch public posts**************/
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/posts/public`)
@@ -18,7 +19,7 @@ const Community = () => {
       .catch((err) => console.error("Error fetching posts:", err));
   }, []);
 
-  // Fetch comments for each Post
+  //**********Fetch comments for each Post*********/
   useEffect(() => {
     posts.forEach((post) => {
       axios
@@ -30,34 +31,54 @@ const Community = () => {
     });
   }, [posts]);
 
+  //***************Handle Comment****************/
   const handleCommentChange = (postId, text) => {
     setNewComments((prev) => ({ ...prev, [postId]: text }));
   };
 
   const handleCommentSubmit = async (postId) => {
-    const text = newComments[postId]?.trim();
-    if (!text) return;
-
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/comments`, {
+      const storedId = localStorage.getItem("truthroom_session");
+
+      await axios.post(`${import.meta.env.VITE_API_URL}/comments`, {
+        text: newComments[postId],
         postId,
-        text,
-        author: "Anonymous",
-        sessionId: localStorage.getItem("truthroom_session"),
+        sessionId: storedId,
       });
+
       setComments((prev) => ({
         ...prev,
-        [postId]: [...(prev[postId] || []), res.data],
+        [postId]: "", // reset input after success
       }));
-      setNewComments((prev) => ({ ...prev, [postId]: "" }));
-      setErrors((prev) => ({ ...prev, [postId]: null }));
     } catch (err) {
       console.error("Failed to add comment:", err);
-      const reason = err.response?.data?.reason || "Something went wrong";
+      const reason = err?.response?.data?.reason || "Something went wrong";
       setErrors((prev) => ({ ...prev, [postId]: reason }));
     }
   };
 
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+      const storedId = localStorage.getItem("truthroom_session");
+
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/comments/${commentId}`,
+        {
+          data: { sessionId: storedId },
+        }
+      );
+
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId].filter((c) => c._id !== commentId),
+      }));
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+      alert("You can only delete your own comment");
+    }
+  };
+
+  //***************Handle Like***************/
   const handleToggleLike = async (postId) => {
     try {
       const res = await axios.post(
@@ -85,9 +106,9 @@ const Community = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-400 p-6">
       <Navbar />
-      <div className="max-w-3xl mx-auto p-4">
+      <div className="max-w-3xl mx-auto p-4 mt-10">
         <h1 className="text-2xl font-bold mb-6">🌍 Community Feed</h1>
 
         {posts.map((post) => {
@@ -129,7 +150,17 @@ const Community = () => {
                     key={comment._id}
                     className="text-sm text-gray-700 border-b border-gray-100 py-1"
                   >
-                    {comment.text}
+                    <span>{comment.text}</span>
+                    {comment.sessionId === sessionId && ( // only show delete button for owner's comments
+                      <button
+                        onClick={() =>
+                          handleDeleteComment(post._id, comment._id)
+                        }
+                        className="text-red-500 text-xs hover:underline ml-2"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 ))}
                 <textarea

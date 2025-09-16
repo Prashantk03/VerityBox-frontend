@@ -26,10 +26,30 @@ export default function Journal() {
       .finally(() => setLoading(false));
   }, []);
 
+  //*****************Delete Logic*****************/
+  const handleDelete = async (postId) => {
+    const sessionId = localStorage.getItem("truthroom_session");
+    if (!window.confirm("Are you sure you want to delete this post?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/posts/${postId}`, {
+        data: { sessionId },
+      });
+      
+      setPosts(posts.filter((post) => post._id !== postId));
+      alert("Post deleted successfully");
+    } catch (err) {
+      setError("Failed to delete post.");
+      console.error(err);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-400 p-6">
       <Navbar />
-      <div className="max-w-2xl mx-auto mt-10 p-6">
+      <div className="max-w-2xl mx-auto mt-10 p-6 ">
         <h2 className="text-2xl font-bold mb-4 text-center">🧠 Your Journal</h2>
 
         {loading && <p>Loading...</p>}
@@ -57,6 +77,12 @@ export default function Journal() {
                   <p className="text-sm">{post.responseAI}</p>
                 </div>
               )}
+              <button
+                onClick={() => handleDelete(post._id)}
+                className="mt-2 px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
             </div>
           ))}
         </div>

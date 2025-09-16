@@ -8,7 +8,7 @@ function GenerateKeyButton() {
   return (
     <button
       onClick={generateTruthKey}
-      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+      className="bg-black hover:bg-gray-600 text-white py-1 px-2 rounded-2xl w-full"
     >
       Generate TruthKey
     </button>

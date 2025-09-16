@@ -5,7 +5,6 @@ import Journal from "./pages/Journal";
 import Community from "./pages/Community";
 import { SessionProvider } from "./context/sessionProvider";
 import TruthKeyPopup from "./components/TruthKeyPopup";
-import GenerateKeyButton from "./components/generateKey";
 
 function App() {
   return (

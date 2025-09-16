@@ -10,7 +10,7 @@ export const SessionProvider = ({ children }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false); // Flag to prevent popup during restore
 
-  // Generate TruthKey when button is clicked
+  //**********Generate TruthKey*********/
   const generateTruthKey = async () => {
     try {
       const res = await axios.post(
@@ -30,7 +30,7 @@ export const SessionProvider = ({ children }) => {
     }
   };
 
-  // Restore an existing TruthKey from the input
+  //**************Restore TruthKey*************/
   const restoreTruthKey = async (key) => {
     setIsRestoring(true); // Set flag to prevent popup on restore
     try {

@@ -6,7 +6,7 @@ export default function PostPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-400 p-6">
       <Navbar />
       <PostForm />
     </div>
