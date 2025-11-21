@@ -35,7 +35,7 @@ export default function Navbar() {
                 scrolled ? "bg-gray-400 opacity-90 " : "bg-transparent"}  `}>
         <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
           {/* Left Section */}
-          <button className="md:hidden p-2" onClick={toggleMenu}>
+          <button className="md:hidden p-2 text-white" onClick={toggleMenu}>
             <FiFeather size={30} />
           </button>
 
@@ -43,19 +43,19 @@ export default function Navbar() {
           <div className="flex-1 text-center text-lg hidden md:flex space-x-6">
             <button
               onClick={() => navigate("/")}
-              className="hover:text-gray-900 transition"
+              className="text-white hover:text-gray-900 transition"
             >
               Home
             </button>
             <button
               onClick={() => navigate("/journal")}
-              className="hover:text-gray-900 transition"
+              className="text-white hover:text-gray-900 transition"
             >
               My Journal
             </button>
             <button
               onClick={() => navigate("/community")}
-              className="hover:text-gray-900 transition"
+              className="text-white hover:text-gray-900 transition"
             >
               Community
             </button>
