@@ -4,11 +4,13 @@ import PostPage from "./pages/PostPage";
 import Journal from "./pages/Journal";
 import Community from "./pages/Community";
 import { SessionProvider } from "./context/sessionProvider";
+import { Toaster } from "react-hot-toast";
 import TruthKeyPopup from "./components/TruthKeyPopup";
 
 function App() {
   return (
     <SessionProvider>
+      <Toaster position="top-center"/>
       <Router>
         <TruthKeyPopup />
         <Routes>

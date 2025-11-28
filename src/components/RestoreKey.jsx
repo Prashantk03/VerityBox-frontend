@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useSession } from "../context/sessionProvider";
 
 function RestoreKey() {
-  const [showModal, setShowModal] = useState(false); // Modal state
+  const [showModal, setShowModal] = useState(false);
   const [key, setKey] = useState("");
-  const { restoreTruthKey } = useSession(); // Assuming you have this function in sessionProvider
+  const { restoreTruthKey } = useSession(); 
 
   // Handle the restore action
   const handleRestore = () => {
-    restoreTruthKey(key.trim()); // Restore the key using the context function
-    setShowModal(false); // Close the modal after restoring
+    restoreTruthKey(key.trim()); 
+    setShowModal(false); 
   };
 
   return (
@@ -22,7 +22,7 @@ function RestoreKey() {
         Restore TruthKey
       </button>
 
-      {/* Modal (Popup) for Restore Key */}
+      {/* PopUp Modal for Restore Key */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">

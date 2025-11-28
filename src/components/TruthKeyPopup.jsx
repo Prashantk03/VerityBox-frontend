@@ -1,4 +1,5 @@
 import { useSession } from "../context/sessionProvider";
+import toast from "react-hot-toast";
 
 function TruthKeyPopup() {
   const { sessionId, showPopup, setShowPopup } = useSession();

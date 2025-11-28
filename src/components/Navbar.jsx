@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FiFeather } from "react-icons/fi";
+import { HiMenu } from "react-icons/hi";
 import { useSession } from "../context/sessionProvider";
 import RestoreKey from "../components/RestoreKey";
 import GenerateKeyButton from "../components/generateKey";
@@ -14,7 +15,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
-        setScrolled(true); 
+        setScrolled(true);
       } else {
         setScrolled(false);
       }
@@ -30,14 +31,17 @@ export default function Navbar() {
 
   return (
     <>
-    {/* Large screen */}
-      <nav className={`fixed w-full z-20 top-0 start-0 transition-all duration-300 ${
-                scrolled ? "bg-gray-400 opacity-90 " : "bg-transparent"}  `}>
+      {/* Large screen */}
+      <nav
+        className={`fixed w-full z-20 top-0 start-0 transition-all duration-300 ${
+          scrolled ? "bg-gray-400 opacity-90 " : "bg-transparent"
+        }  `}
+      >
         <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
           {/* Left Section */}
-          <button className="md:hidden p-2 text-white" onClick={toggleMenu}>
+          <div className="p-2 text-white">
             <FiFeather size={30} />
-          </button>
+          </div>
 
           {/* Middle Section */}
           <div className="flex-1 text-center text-lg hidden md:flex space-x-6">
@@ -68,19 +72,23 @@ export default function Navbar() {
               <RestoreKey />
             </div>
           )}
+          <button
+            className="md:hidden p-2 text-black"
+            onClick={toggleMenu}
+          >
+            <HiMenu className="h-8 w-8 text-black"/>
+          </button>
         </div>
       </nav>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden fixed inset-0 z-50" onClick={closeMenu}>
+        <div className="flex md:hidden fixed inset-0 z-50 bg-black/0 animate-fadeIn" onClick={closeMenu}>
           <div
-            className="w-64 h-full bg-gray-900 opacity-90 text-white p-4"
+            className="ml-auto w-64 h-full bg-gray-900 opacity-90 text-white p-4 animate-slideIn"
             onClick={(e) => e.stopPropagation()}
-            >
-            <div className="border-b-2 text-center">
-              VerityBox
-            </div>
+          >
+            <div className="border-b-2 text-center">VerityBox</div>
             <button
               onClick={() => navigate("/")}
               className="w-full py-2 mt-4 hover:bg-gray-600"

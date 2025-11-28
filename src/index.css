@@ -1,2 +1,37 @@
 @import "tailwindcss";
 
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.typing-cursor::after {
+  content: "|";
+  animation: blink 0.7s infinite;
+}

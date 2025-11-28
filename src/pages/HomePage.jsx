@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-black text-black flex flex-col items-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-gray-700 text-black flex flex-col items-center">
         <div className="flex-1 flex flex-col items-center mt-6 p-6 ">
           {/* Logo + Title */}
           <motion.div

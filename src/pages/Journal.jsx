@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import toast from "react-hot-toast";
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
@@ -40,9 +41,10 @@ export default function Journal() {
       });
 
       setPosts(posts.filter((post) => post._id !== postId));
-      alert("Post deleted successfully");
+      toast.success("Post deleted successfully");
     } catch (err) {
       setError("Failed to delete post.");
+      toast.error("Failed to delete post.");
       console.error(err);
     }
   };

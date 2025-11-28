@@ -82,7 +82,7 @@ const Community = () => {
       }));
     } catch (err) {
       console.error("Failed to delete comment:", err);
-      alert("You can only delete your own comment");
+      toast.error("You can only delete your own comment");
     }
   };
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
+import TypingText from "./TypingText";
 
 export default function PostForm() {
   const [text, setText] = useState("");
@@ -20,14 +22,18 @@ export default function PostForm() {
   }, []);
 
   const submitPost = async () => {
-    if (!sessionId){
-      alert("You must generate your TruhtKey before posting to prevent from any Data Loss");
+    if (!sessionId) {
+      toast.error(
+        "You must generate your TruhtKey before posting to prevent from any Data Loss"
+      );
       return;
     }
 
     setLoading(true);
     setResponse("");
     setError("");
+
+    const userText = text;
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/posts`, {
@@ -36,7 +42,12 @@ export default function PostForm() {
         sessionId,
         public: isPublic,
       });
-      setResponse(res.data.responseAI || "No AI feedback.");
+      setResponse({
+        question: userText,
+        answer: res.data.responseAI || "No AI feedback.",
+      });
+
+      setText("");
     } catch (err) {
       setError(err?.response?.data?.reason || "Something went wrong");
     } finally {
@@ -86,9 +97,15 @@ export default function PostForm() {
 
       {error && <div className="text-black font-semibold">{error}</div>}
       {response && (
-        <div className="p-4 mt-4 border-l-4 border-gray-400 bg-white rounded">
-          <p className="font-semibold">AI Reflection:</p>
-          <p>{response}</p>
+        <div className="p-4 mt-4 border-l-4 border-gray-400 bg-white rounded space-y-2">
+          <div>
+            <p className="font-semibold">Your Post:</p>
+            <p className="text-gray-700">{response.question}</p>
+          </div>
+          <div>
+            <p className="font-semibold mt-2">AI Reflection:</p>
+            <TypingText text={response.answer} speed={20} className="typing-cursor" />
+          </div>
         </div>
       )}
     </div>
