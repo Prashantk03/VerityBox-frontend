@@ -1,4 +1,4 @@
-VerityBox (formerly TruthRoom) - Frontend
+VerityBox (formerly TruthRoom) - Hosted using Vercel [ https://vercel.com ]
 Overview
 
 VerityBox is the personal growth platform, providing users with a space to anonymously post their thoughts, receive feedback, and engage with others. Built with React, this frontend interacts with the backend to provide a seamless user experience.
@@ -19,7 +19,7 @@ React Query: For handling server-side data fetching
 
 Framer Motion: For animations
 
-Socket.io: For real-time updates
+React-hot-toast: For giving errors, alerts, success notification.
 
 Features:
 
