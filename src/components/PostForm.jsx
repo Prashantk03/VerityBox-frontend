@@ -24,7 +24,7 @@ export default function PostForm() {
   const submitPost = async () => {
     if (!sessionId) {
       toast.error(
-        "You must generate your TruhtKey before posting to prevent from any Data Loss"
+        "You must generate your TruhtKey before posting to prevent from any Data Loss",
       );
       return;
     }
@@ -56,22 +56,22 @@ export default function PostForm() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl space-y-4">
+    <div className=" max-w-4xl mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl p-5 md:p-8 space-y-6 ">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={5}
-        className="w-full border border-gray-400 p-3 rounded-lg"
+        className="w-full min-h-[220px] bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
         placeholder="Write your anonymous thought here..."
       />
 
-      <div className="flex justify-between items-center">
-        <label className="text-sm">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <label className="text-sm text-slate-300">
           Feedback Type:
           <select
             value={feedbackType}
             onChange={(e) => setFeedbackType(e.target.value)}
-            className="ml-2 border p-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 "
+            className="ml-2 bg-slate-800 text-white border border-slate-700 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="ai">AI Reflection</option>
             <option value="community">Community</option>
@@ -80,12 +80,12 @@ export default function PostForm() {
         <button
           onClick={submitPost}
           disabled={loading || !text}
-          className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-900 disabled:opacity-50"
+          className="w-full md:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold hover:scale-105 transition-all disabled:opacity-50"
         >
           {loading ? "Posting..." : "Post"}
         </button>
       </div>
-      <label className="flex items-center mt-2 space-x-2">
+      <label className="flex items-center gap-3 text-slate-300">
         <input
           type="checkbox"
           checked={isPublic}
@@ -95,16 +95,20 @@ export default function PostForm() {
         <span className="text-sm">Make this post public?</span>
       </label>
 
-      {error && <div className="text-black font-semibold">{error}</div>}
+      {error && <div className="text-red-400 font-semibold">{error}</div>}
       {response && (
-        <div className="p-4 mt-4 border-l-4 border-gray-400 bg-white rounded space-y-2">
+        <div className="mt-6 bg-slate-900/60 border border-indigo-500/20 rounded-2xl p-6 space-y-4">
           <div>
-            <p className="font-semibold">Your Post:</p>
+            <p className="font-semibold text-indigo-400">Your Sharing:</p>
             <p className="text-gray-700">{response.question}</p>
           </div>
           <div>
-            <p className="font-semibold mt-2">AI Reflection:</p>
-            <TypingText text={response.answer} speed={20} className="typing-cursor" />
+            <p className="font-semibold text-white">AI Reflection:</p>
+            <TypingText
+              text={response.answer}
+              speed={20}
+              className="typing-cursor"
+            />
           </div>
         </div>
       )}

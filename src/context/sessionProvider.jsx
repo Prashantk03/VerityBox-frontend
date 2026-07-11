@@ -5,7 +5,7 @@ const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
   const [sessionId, setSessionId] = useState(
-    localStorage.getItem("truthroom_session") || ""
+    localStorage.getItem("truthroom_session") || "",
   );
   const [showPopup, setShowPopup] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false); // Flag to prevent popup during restore
@@ -14,7 +14,7 @@ export const SessionProvider = ({ children }) => {
   const generateTruthKey = async () => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/guest`
+        `${import.meta.env.VITE_API_URL}/auth/guest`,
       );
       const newSessionId = res.data.sessionId;
 
@@ -36,12 +36,18 @@ export const SessionProvider = ({ children }) => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/validate`,
-        { sessionId: key }
+        { sessionId: key },
       );
 
       if (res.data.valid) {
         localStorage.setItem("truthroom_session", res.data.session.sessionId);
-        setSessionId(res.data.session.sessionId);
+
+        localStorage.setItem(
+          "truthroom_display_name",
+          res.data.session.displayName || "",
+        );
+
+        setSessionId(res.data.session.sessionId); 
       } else {
         alert("❌ Invalid TruthKey");
       }

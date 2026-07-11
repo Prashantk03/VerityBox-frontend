@@ -1,14 +1,16 @@
 import { useSession } from "../context/sessionProvider";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function TruthKeyPopup() {
   const { sessionId, showPopup, setShowPopup } = useSession();
+  const navigate = useNavigate();
 
   if (!showPopup) return null;
 
   const copyKey = () => {
     navigator.clipboard.writeText(sessionId);
-    alert("TruthKey copied to clipboard!");
+    toast.success("TruthKey copied successfully!");
   };
 
   return (
@@ -24,10 +26,13 @@ function TruthKeyPopup() {
             Copy
           </button>
           <button
-            onClick={() => setShowPopup(false)}
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            onClick={() => {
+              setShowPopup(false);
+              navigate("/identity");
+            }}
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
           >
-            Close
+            Continue
           </button>
         </div>
       </div>

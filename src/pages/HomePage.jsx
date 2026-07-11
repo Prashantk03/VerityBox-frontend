@@ -11,74 +11,145 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white to-gray-700 text-black flex flex-col items-center">
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-black flex flex-col items-center">
         <div className="flex-1 flex flex-col items-center mt-6 p-6 ">
-          {/* Logo + Title */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex items-center space-x-3 mt-10 mb-6"
-          >
-            <FiFeather size={36} className="text-gray-600" />
-            <h1 className="text-4xl font-bold tracking-tight">VerityBox</h1>
-          </motion.div>
-          {/* Tagline + CTA */}
-          <motion.p
-            className="text-lg text-center max-w-2xl mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Share your raw, unfiltered thoughts, Or want to share about your ups
-            and downs in life, Anonymously. Let AI reflect back with calm, kind
-            insight and also get a great community feedback to help each other.
-          </motion.p>
-          <motion.button
-            onClick={() => navigate("/post")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-black hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-lg font-semibold transition mb-12"
-          >
-            Start Sharing
-          </motion.button>
-          {/* Info Sections */}
-          <section className="max-w-4xl w-full space-y-10 text-left">
-            <div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-600">
-                🧠 How It Works
-              </h2>
-              <p className="text-black">
-                You write anonymously. Before saving your post, VerityBox scans
-                it for safety (no names, threats, or hate). If clean, GPT-3.5
-                generates a personal reflection — not advice, just insight. And
-                also a great community of peoples can share their feedback for
-                each other.
-              </p>
-            </div>
+          <div className="flex-1 w-full">
+            {/* Hero Section */}
+            <section className="min-h-[80vh] flex items-center justify-center px-6">
+              <div className="max-w-5xl mx-auto text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: -30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="flex justify-center items-center gap-3 mb-6"
+                >
+                  {/* <FiFeather className="text-indigo-400" size={40} /> */}
+                  <span className="text-2xl md:text-4xl font-medium text-gray-300">
+                    VerityBox
+                  </span>
+                </motion.div>
 
-            <div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-600">
-                🔒 Why Anonymous?
-              </h2>
-              <p className="text-black">
-                Because honesty is hard when you're being watched. We believe
-                the most real, vulnerable thoughts come when you're unfiltered.
-                No identity. No shame. Just truth — and support.
-              </p>
-            </div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
+                >
+                  Share What You
+                  <br />
+                  Can't Say Out Loud
+                </motion.h1>
 
-            <div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-600">
-                ⚖️ Is It Safe?
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-8 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto"
+                >
+                  A safe place to express your thoughts anonymously, receive
+                  thoughtful AI reflections, and connect with a supportive
+                  community.
+                </motion.p>
+
+                <motion.div
+                  className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <button
+                    onClick={() => navigate("/post")}
+                    className="px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold hover:scale-105 transition-all"
+                  >
+                    Start Sharing
+                  </button>
+
+                  <button className="px-8 py-4 rounded-xl border border-gray-500 text-white hover:bg-white/10 transition">
+                    Learn More
+                  </button>
+                </motion.div>
+              </div>
+            </section>
+
+            {/* Feature Cards */}
+            <section className="max-w-6xl mx-auto px-6 py-20">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    🧠 AI Reflection
+                  </h3>
+                  <p className="text-gray-300">
+                    Receive calm, thoughtful reflections on your posts. Not
+                    advice. Just perspective.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    🔒 Anonymous
+                  </h3>
+                  <p className="text-gray-300">
+                    No account required. No identity attached. Just honest
+                    thoughts.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    🔑 TruthKey
+                  </h3>
+                  <p className="text-gray-300">
+                    Restore access to your journal anytime without creating an
+                    account.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section className="max-w-5xl mx-auto px-6 pb-20">
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12">
+                Why VerityBox?
               </h2>
-              <p className="text-black">
-                Yes. VerityBox uses AI moderation to block any doxxing, hate
-                speech, or harmful content. You stay 100% anonymous — and we
-                still keep it secure and respectful.
-              </p>
-            </div>
-          </section>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white/5 p-6 rounded-xl">
+                  <h3 className="font-bold text-xl text-white mb-2">
+                    No Accounts
+                  </h3>
+                  <p className="text-gray-300">
+                    Start writing instantly without signup friction.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-xl">
+                  <h3 className="font-bold text-xl text-white mb-2">
+                    Community Support
+                  </h3>
+                  <p className="text-gray-300">
+                    Receive thoughtful feedback from others who understand.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-xl">
+                  <h3 className="font-bold text-xl text-white mb-2">
+                    Safe Environment
+                  </h3>
+                  <p className="text-gray-300">
+                    AI moderation helps keep discussions respectful.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-xl">
+                  <h3 className="font-bold text-xl text-white mb-2">
+                    Data Recovery
+                  </h3>
+                  <p className="text-gray-300">
+                    TruthKey helps protect your anonymous journal from loss.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
       <Footer />

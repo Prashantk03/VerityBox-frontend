@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import toast from "react-hot-toast";
 
 export default function Journal() {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,51 +53,156 @@ export default function Journal() {
   };
 
   return (
-    <>
-        <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-400 p-6">
-        <div className="max-w-2xl mx-auto mt-10 p-6 ">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            🧠 Your Journal
-          </h2>
+  <>
+    <Navbar />
 
-          {loading && <p>Loading...</p>}
-          {error && <p className="text-red-500">{error}</p>}
+    <main className="min-h-screen pt-28 pb-16 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {!loading && !error && posts.length === 0 && (
-            <p className="text-gray-600 text-center">No posts yet.</p>
-          )}
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl sm:text-5xl font-bold text-white">
+            📖 Your Journal
+          </h1>
 
-          <div className="space-y-6">
-            {posts.map((post) => (
-              <div
-                key={post._id}
-                className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white"
-              >
-                <p className="text-sm text-gray-500 mb-2">
-                  {new Date(post.createdAt).toLocaleString()}
+          <p className="mt-4 text-slate-300 max-w-2xl mx-auto">
+            Every anonymous thought you've shared is safely stored here.
+            Reflect on your journey, revisit AI insights, and continue growing.
+          </p>
+
+          {!loading && !error && posts.length > 0 && (
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-3">
+                <p className="text-2xl font-bold text-white">
+                  {posts.length}
                 </p>
-                <p className="font-medium">{post.text}</p>
+                <p className="text-sm text-slate-400">
+                  Journal Entries
+                </p>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-3">
+                <p className="text-2xl font-bold text-white">
+                  {posts.filter((post) => post.responseAI).length}
+                </p>
+                <p className="text-sm text-slate-400">
+                  AI Reflections
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex justify-center py-20">
+            <div className="h-10 w-10 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
+          </div>
+        )}
+
+        {/* Error */}
+        {!loading && error && (
+          <div className="text-center">
+            <p className="text-red-400 text-lg">{error}</p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && posts.length === 0 && (
+          <div className="text-center py-20">
+
+            <div className="text-6xl mb-6">📭</div>
+
+            <h2 className="text-3xl font-bold text-white">
+              No Journal Entries Yet
+            </h2>
+
+            <p className="text-slate-400 mt-4 max-w-lg mx-auto">
+              Start sharing your thoughts anonymously.
+              Every reflection you receive will appear here.
+            </p>
+
+            <button
+              onClick={() => navigate("/post")}
+              className="mt-8 px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold hover:scale-105 transition"
+            >
+              Write Your First Thought
+            </button>
+
+          </div>
+        )}
+
+        {/* Journal Cards */}
+        {!loading && !error && posts.length > 0 && (
+          <div className="space-y-8">
+
+            {posts.map((post) => (
+
+              <motion.div
+                key={post._id}
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl p-6 md:p-8"
+              >
+
+                {/* Date */}
+                <p className="text-sm text-slate-400 mb-6">
+                  🕒{" "}
+                  {new Date(post.createdAt).toLocaleString("en-US", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  })}
+                </p>
+
+                {/* Thought */}
+                <div className="mb-6">
+                  <h3 className="text-indigo-400 font-semibold mb-3">
+                    Your Thought
+                  </h3>
+
+                  <p className="text-white leading-8 whitespace-pre-wrap">
+                    {post.text}
+                  </p>
+                </div>
+
+                {/* AI Reflection */}
                 {post.responseAI && (
-                  <div className="mt-3 p-3 border-l-4 border-blue-500 bg-blue-50 rounded">
-                    <p className="font-semibold text-sm text-blue-700">
-                      AI Reflection:
+                  <div className="rounded-2xl bg-slate-900/60 border border-indigo-500/20 p-5">
+
+                    <p className="text-indigo-400 font-semibold mb-3">
+                      AI Reflection
                     </p>
-                    <p className="text-sm">{post.responseAI}</p>
+
+                    <p className="text-slate-300 leading-8 whitespace-pre-wrap">
+                      {post.responseAI}
+                    </p>
+
                   </div>
                 )}
+
+                {/* Delete */}
                 <button
                   onClick={() => handleDelete(post._id)}
-                  className="mt-2 px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="mt-6 px-6 py-2 rounded-xl border border-red-500 text-red-400 hover:bg-red-500 hover:text-white transition"
                 >
-                  Delete
+                  Delete Entry
                 </button>
-              </div>
+
+              </motion.div>
+
             ))}
+
           </div>
-        </div>
+        )}
       </div>
-      <Footer />
-    </>
-  );
+    </main>
+
+    <Footer />
+  </>
+);
 }

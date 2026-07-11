@@ -1,68 +1,165 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
+import CommunityHero from "../components/community/CommunityHero";
+import CommunityStats from "../components/community/CommunityStats";
+import CommunityGuidelines from "../components/community/CommunityGuidelines";
+import FeedHeader from "../components/community/FeedHeader";
+import CommunityCard from "../components/community/CommunityCard";
+import EmptyFeed from "../components/community/EmptyFeed";
+import LoadingSkeleton from "../components/community/LoadingSkeleton";
+import Pagination from "../components/community/Pagination";
 
 const Community = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
   const [newComments, setNewComments] = useState({});
+
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [sendingComments, setSendingComments] = useState({});
+
+  const totalLikes = posts.reduce((sum, post) => sum + (post.likes || 0), 0);
+
+  const totalComments = Object.values(comments).reduce(
+    (sum, arr) => sum + arr.length,
+    0,
+  );
 
   const sessionId = localStorage.getItem("truthroom_session");
 
   //************Fetch public posts**************/
   useEffect(() => {
+    setLoading(true);
+
     axios
-      .get(`${import.meta.env.VITE_API_URL}/posts/public`)
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.error("Error fetching posts:", err));
+      .get(
+        `${import.meta.env.VITE_API_URL}/posts/public?page=${currentPage}&limit=5`,
+        {
+          headers: {
+            "x-session-id": sessionId,
+          },
+        },
+      )
+      .then((res) => {
+        const fetchedPosts = res.data.posts;
+
+        setPosts(fetchedPosts);
+
+        setTotalPages(res.data.totalPages);
+
+        const commentMap = {};
+
+        fetchedPosts.forEach((post) => {
+          commentMap[post._id] = post.comments || [];
+        });
+
+        setComments(commentMap);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [currentPage]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  //**********Fetch comments for each Post*********/
-  useEffect(() => {
-    posts.forEach((post) => {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/comments/${post._id}`)
-        .then((res) => {
-          setComments((prev) => ({ ...prev, [post._id]: res.data }));
-        })
-        .catch((err) => console.error("Error fetching comments:", err));
-    });
-  }, [posts]);
-
   //***************Handle Comment****************/
-  const handleCommentChange = (postId, text) => {
-    setNewComments((prev) => ({ ...prev, [postId]: text }));
-  };
-
   const handleCommentSubmit = async (postId) => {
-    try {
-      const storedId = localStorage.getItem("truthroom_session");
+    const text = (newComments[postId] || "").trim();
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/comments`, {
-        text: newComments[postId],
+    if (!text) return;
+
+    const storedId = localStorage.getItem("truthroom_session");
+    const displayName = localStorage.getItem("truthroom_display_name");
+
+    const tempId = `temp-${Date.now()}`;
+
+    const optimisticComment = {
+      _id: tempId,
+      text,
+      sessionId: storedId,
+      displayName,
+      createdAt: new Date().toISOString(),
+      optimistic: true,
+    };
+
+    setComments((prev) => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), optimisticComment],
+    }));
+
+    setNewComments((prev) => ({
+      ...prev,
+      [postId]: "",
+    }));
+
+    setSendingComments((prev) => ({
+      ...prev,
+      [postId]: true,
+    }));
+
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/comments`, {
+        text,
         postId,
         sessionId: storedId,
       });
 
-      setNewComments((prev) => ({
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId].map((comment) =>
+          comment._id === tempId ? res.data : comment,
+        ),
+      }));
+
+      setErrors((prev) => ({
         ...prev,
         [postId]: "",
       }));
-
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/comments/${postId}`
-      );
+    } catch (err) {
       setComments((prev) => ({
         ...prev,
-        [postId]: res.data,
+        [postId]: prev[postId].filter((comment) => comment._id !== tempId),
       }));
-    } catch (err) {
-      console.error("Failed to add comment:", err);
+
       const reason = err?.response?.data?.reason || "Something went wrong";
-      setErrors((prev) => ({ ...prev, [postId]: reason }));
+
+      setErrors((prev) => ({
+        ...prev,
+        [postId]: reason,
+      }));
+    } finally {
+      setSendingComments((prev) => ({
+        ...prev,
+        [postId]: false,
+      }));
     }
+  };
+
+  const handleCommentChange = (postId, text) => {
+    setNewComments((prev) => ({
+      ...prev,
+      [postId]: text,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [postId]: "",
+    }));
   };
 
   const handleDeleteComment = async (postId, commentId) => {
@@ -73,7 +170,7 @@ const Community = () => {
         `${import.meta.env.VITE_API_URL}/comments/${commentId}`,
         {
           data: { sessionId: storedId },
-        }
+        },
       );
 
       setComments((prev) => ({
@@ -88,11 +185,27 @@ const Community = () => {
 
   //***************Handle Like***************/
   const handleToggleLike = async (postId) => {
+    // Save current state in case we need to rollback
+    const previousPosts = posts;
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post._id !== postId) return post;
+
+        const liked = post.liked;
+
+        return {
+          ...post,
+          likes: liked ? post.likes - 1 : post.likes + 1,
+          liked: !liked,
+        };
+      }),
+    );
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/posts/${postId}/toggle-like`,
         { sessionId },
-        { headers: { "Cache-Control": "no-cache" } } // prevent 304
       );
 
       setPosts((prevPosts) =>
@@ -101,107 +214,71 @@ const Community = () => {
             ? {
                 ...post,
                 likes: res.data.likes,
-                likedBy: res.data.liked
-                  ? [...(post.likedBy || []), sessionId]
-                  : post.likedBy.filter((id) => id !== sessionId),
+                liked: res.data.liked,
               }
-            : post
-        )
+            : post,
+        ),
       );
     } catch (err) {
-      console.error("Toggle like failed:", err.response?.data || err.message);
+      console.error("Toggle like failed:", err);
+
+      setPosts(previousPosts);
+
+      toast.error("Failed to update like.");
     }
   };
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-400 p-6">
-        <div className="max-w-3xl mx-auto p-4 mt-10">
-          <h1 className="text-2xl font-bold mb-6">🌍 Community Feed</h1>
 
-          {posts.map((post) => {
-            const liked = post.likedBy?.includes(sessionId);
+      <main className="min-h-screen pt-28 pb-16 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <CommunityHero />
 
-            return (
-              <div
-                key={post._id}
-                className="bg-white shadow p-4 rounded-xl mb-6 border border-gray-200"
-              >
-                <p className="text-gray-800 mb-2 whitespace-pre-wrap">
-                  {post.text}
-                </p>
-                {post.responseAI && (
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-2 mb-2 rounded">
-                    <p className="text-sm text-blue-800">
-                      🤖 AI Response: {post.responseAI}
-                    </p>
-                  </div>
-                )}
-                <p className="text-xs text-gray-400">
-                  {new Date(post.createdAt).toLocaleString()}
-                </p>
+          <CommunityStats
+            totalPosts={posts.length}
+            totalLikes={totalLikes}
+            totalComments={totalComments}
+          />
 
-                {/* ✅ Like/Unlike button */}
-                <button
-                  onClick={() => handleToggleLike(post._id)}
-                  className="mt-2 text-sm text-blue-600 hover:underline"
-                >
-                  {liked ? "💖 Unlike" : "🤍 Like"} {post.likes}
-                </button>
+          <CommunityGuidelines />
 
-                <hr className="my-4" />
+          <FeedHeader />
 
-                <div>
-                  <h3 className="font-semibold text-sm mb-2">💬 Comments</h3>
-                  {(comments[post._id] || []).map((comment) => (
-                    <div
-                      key={comment._id}
-                      className="text-sm text-gray-700 border-b border-gray-100 py-1"
-                    >
-                      <span>{comment.text}</span>
-                      {comment.sessionId === sessionId && ( // only show delete button for owner's comments
-                        <button
-                          onClick={() =>
-                            handleDeleteComment(post._id, comment._id)
-                          }
-                          className="text-red-500 text-xs hover:underline ml-2"
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <textarea
-                    placeholder="Add a comment..."
-                    value={newComments[post._id] || ""}
-                    onChange={(e) =>
-                      handleCommentChange(post._id, e.target.value)
-                    }
-                    className="w-full border rounded p-2 mt-2 text-sm resize-none"
-                    rows={2}
-                  />
-                  {errors[post._id] && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors[post._id]}
-                    </p>
-                  )}
-                  <button
-                    onClick={() => handleCommentSubmit(post._id)}
-                    className="mt-2 bg-indigo-600 text-white px-4 py-1 text-sm rounded hover:bg-indigo-700"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+          {loading ? (
+            <LoadingSkeleton />
+          ) : posts.length === 0 ? (
+            <EmptyFeed />
+          ) : (
+            <>
+              {posts.map((post) => (
+                <CommunityCard
+                  key={post._id}
+                  post={post}
+                  currentTime={currentTime}
+                  sessionId={sessionId}
+                  sendingComments={sendingComments}
+                  comments={comments}
+                  newComments={newComments}
+                  errors={errors}
+                  handleCommentChange={handleCommentChange}
+                  handleCommentSubmit={handleCommentSubmit}
+                  handleDeleteComment={handleDeleteComment}
+                  handleToggleLike={handleToggleLike}
+                />
+              ))}
 
-          {posts.length === 0 && (
-            <p className="text-center text-gray-500">No public posts yet.</p>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </>
           )}
         </div>
-      </div>
+      </main>
+
       <Footer />
     </>
   );
