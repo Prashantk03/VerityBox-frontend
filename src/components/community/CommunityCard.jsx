@@ -5,6 +5,7 @@ import CommentSection from "./CommentSection";
 import Avatar from "./Avatar";
 import formatTimeAgo from "../../utils/formatTimeAgo";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
 export default function CommunityCard({
   post,
@@ -22,6 +23,51 @@ export default function CommunityCard({
   const liked = post.liked;
   const totalComments = comments[post._id]?.length || 0;
   const navigate = useNavigate();
+
+  const [expanded, setExpanded] = useState(false);
+
+  const textRef = useRef(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  const aiResponseRef = useRef(null);
+  const [aiExpanded, setAiExpanded] = useState(false);
+  const [aiHasOverflow, setAiHasOverflow] = useState(false);
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (!element) return;
+
+    const checkOverflow = () => {
+      if (!expanded) {
+        setHasOverflow(element.scrollHeight > element.clientHeight + 1);
+      }
+    };
+
+    checkOverflow();
+
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [post.text, expanded]);
+
+  useEffect(() => {
+    const element = aiResponseRef.current;
+    if (!element) return;
+
+    const checkOverflow = () => {
+      if (!aiExpanded) {
+        setAiHasOverflow(element.scrollHeight > element.clientHeight + 1);
+      }
+    };
+
+    checkOverflow();
+
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [post.responseAI, aiExpanded]);
 
   return (
     <motion.article
@@ -58,7 +104,6 @@ export default function CommunityCard({
                   {post.reputation.title}
                 </p>
               )}
-
             </div>
           </div>
 
@@ -78,9 +123,23 @@ export default function CommunityCard({
       {/* Body */}
       <div className="p-6">
         <section className="mb-8">
-          <p className="text-white whitespace-pre-wrap leading-8 text-[15px]">
+          <p
+            ref={textRef}
+            className={`whitespace-pre-line leading-8 text-slate-200 ${
+              expanded ? "" : "line-clamp-5"
+            }`}
+          >
             {post.text}
           </p>
+
+          {hasOverflow && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="mt-2 text-indigo-400 hover:text-indigo-300 font-medium transition"
+            >
+              {expanded ? "Show less" : "Show more"}
+            </button>
+          )}
         </section>
 
         {/* AI Reflection */}
@@ -90,9 +149,23 @@ export default function CommunityCard({
               AI Reflection
             </h4>
 
-            <p className="text-slate-300 whitespace-pre-wrap leading-8">
+            <p
+              ref={aiResponseRef}
+              className={`text-slate-300 whitespace-pre-wrap leading-8 ${
+                aiExpanded ? "" : "line-clamp-5"
+              }`}
+            >
               {post.responseAI}
             </p>
+
+            {aiHasOverflow && (
+              <button
+                onClick={() => setAiExpanded(!aiExpanded)}
+                className="mt-2 text-indigo-400 hover:text-indigo-300 font-medium transition"
+              >
+                {aiExpanded ? "Show less" : "Show more"}
+              </button>
+            )}
           </section>
         )}
 
